@@ -1,0 +1,2 @@
+1- to make sure a Hall has one timeSlot per day we can make HashMap<date,TimeSlot> 
+2- make sure Event can be in HashSet
