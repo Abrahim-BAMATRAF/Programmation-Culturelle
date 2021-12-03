@@ -14,4 +14,17 @@ public class Play extends Event {
 		this.title = t;
 	}
 
+	public Date getStartDate() {
+		return startDate;
+	}
+
+	public Date getEndDate() {
+		return endDate;
+	}
+
+	public String getTitle() {
+		return title;
+	}
+	
+
 }

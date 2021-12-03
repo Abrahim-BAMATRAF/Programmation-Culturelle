@@ -13,4 +13,14 @@ public class Concert extends Event {
 		this.presenter = name;
 	}
 
+
+	public Date getDate() {
+		return date;
+	}
+
+
+	public String getPresenter() {
+		return presenter;
+	}
+
 }

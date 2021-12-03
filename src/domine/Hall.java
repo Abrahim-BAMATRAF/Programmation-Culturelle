@@ -1,9 +1,7 @@
 package domine;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class Hall { //represent "salles" // Aggregate
 	
@@ -35,42 +33,55 @@ public class Hall { //represent "salles" // Aggregate
 		return this.timeSlots.get(d);
 	}
 	
-	public void addConcert(Concert con, TimeSlot slot)throws Exception{
-		if(this.events.containsKey(slot.getDate())){
-			throw new Exception("this timeSlot is already alocated");
+	public void addConcert(Concert con)throws Exception{
+		if(this.events.containsKey(con.getDate())){
+			throw new Exception("this date is already alocated");
 		}
-		if(!this.timeSlots.containsKey(slot.getDate())){
-			throw new Exception("this timeSlot does not exist for this Hall");
+		if(!this.timeSlots.containsKey(con.getDate())){
+			throw new Exception("this date does not exist for this Hall");
 		}
 		if(con.getCapacity() > this.capacity){
 			throw new Exception("this Hall is not big enough (Event expectedCapacity > the Hall capacity)");
 		}
-		this.events.put(slot.getDate(), con);
+		this.events.put(con.getDate(), con);
 	}
 	
-	public void addPlay(Play pl,Collection<TimeSlot> slot)throws Exception{
+	public void addPlay(Play pl)throws Exception{
 		// verifying requirement 
 		if(pl.getCapacity() > this.capacity){
 			throw new Exception("this Hall is not big enough (Event expectedCapacity > the Hall capacity)");
 		}
 		
-		Iterator<TimeSlot> it = slot.iterator();
-		while(it.hasNext()){
-			TimeSlot tmp = (TimeSlot) it.next();
-			if(this.events.containsKey(tmp.getDate())){
+		
+		Date startingDate = pl.getStartDate();
+		Date endingDate = pl.getEndDate();
+		
+		while(startingDate.before(endingDate)) {
+			
+			if(this.events.containsKey(startingDate)){
 				throw new Exception("this timeSlot is already alocated");
 			}
-			if(!this.timeSlots.containsKey(tmp.getDate())){
+			if(!this.timeSlots.containsKey(startingDate)){
 				throw new Exception("this timeSlot does not exist for this Hall");
-			}	
+			}
+			
+			
+			@SuppressWarnings("deprecation")
+			Date tmp = new Date(startingDate.getYear(), startingDate.getMonth(), startingDate.getDay() +1);
+			startingDate = tmp;
 		}
 		
-		//adding the Play
-		it = slot.iterator();
-		while(it.hasNext()){
-			TimeSlot tmp = (TimeSlot) it.next();
-			this.events.put(tmp.getDate(), pl);
+		startingDate = pl.getStartDate();
+		
+		while(startingDate.before(endingDate)) {
+			this.events.put(startingDate, pl);
+			
+			@SuppressWarnings("deprecation")
+			Date tmp = new Date(startingDate.getYear(), startingDate.getMonth(), startingDate.getDay() +1);
+			startingDate = tmp;
 		}
+
+
 	}
 
 
