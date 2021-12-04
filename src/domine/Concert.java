@@ -3,7 +3,7 @@ package domine;
 import java.util.Date;
 
 public class Concert extends Event {
-	private final Date date;
+	private final Date date;		// the date we want the event to take place in, not necessarily the actual date of the event
 	private final String presenter; //could be replaced by value object
 	
 

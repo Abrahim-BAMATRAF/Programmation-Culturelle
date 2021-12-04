@@ -1,7 +1,10 @@
 package domine;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 public class Hall { //represent "salles" // Aggregate
 	
@@ -32,6 +35,7 @@ public class Hall { //represent "salles" // Aggregate
 	public TimeSlot getTimeSlot(Date d){
 		return this.timeSlots.get(d);
 	}
+	
 	
 	public void addConcert(Concert con)throws Exception{
 		if(this.events.containsKey(con.getDate())){
@@ -83,6 +87,104 @@ public class Hall { //represent "salles" // Aggregate
 
 
 	}
+	
+	
+	public boolean verifyConcertDate(Date d) {
+		if(this.events.containsKey(d)){
+			return false;
+		}
+		if(!this.timeSlots.containsKey(d)){
+			return false;
+		}
 
+		return true;
+	}
+	
+	public boolean verifyCapacity(Event ev) {
+		return ev.getCapacity() <= this.capacity;
+	}
+	
+	public Date getEmptyWeekend() {
+
+        for (Entry<Date, TimeSlot> entry : timeSlots.entrySet()) {
+        	
+        	Date date = entry.getKey();
+        	if(isDateWeekend(date) && verifyConcertDate(date)) {
+        		return date;
+        	}
+        	
+        }
+        
+        return null;
+	}
+	
+	public static boolean isDateWeekend(Date d) {
+		
+	    Calendar c1 = Calendar.getInstance();
+	    c1.setTime(d);
+
+	    if ((c1.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY) 
+	            || (Calendar.DAY_OF_WEEK == Calendar.SUNDAY)) {
+	    	return true;
+	    	
+	    }
+	    
+	    return false;
+	}
+	
+	public boolean hasConcert() {
+        for (Entry<Date, Event> entry : events.entrySet()) {
+        	
+        	Event event = entry.getValue();
+        	
+        	if(event instanceof Concert) {
+        		return true;
+        	}
+        }
+		
+		return false;
+	}
+	
+	public boolean hasEmptySlots() {
+		return timeSlots.size() > events.size();
+	}
+	
+	public Date getNearestValidDate(Date date) {
+		
+		Date res = null;
+		long diff = Integer.MAX_VALUE;
+        for (Entry<Date, TimeSlot> entry : timeSlots.entrySet()) {
+        	
+        	Date d = entry.getKey();
+        	
+        	if(this.verifyConcertDate(d)) {
+        		long diffInMillies = Math.abs(d.getTime() - date.getTime());
+        	    long currentDiff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+        	    
+        	    if(currentDiff < diff) {
+        	    	diff = currentDiff;
+        	    	res = d;
+        	    }
+        	}
+        }		
+		return res;
+	}
+	
+	public boolean addConcert(Concert con, Date date)throws Exception{
+		if(this.events.containsKey(date)){
+			throw new Exception("this date is already alocated");
+		}
+		if(!this.timeSlots.containsKey(date)){
+			throw new Exception("this date does not exist for this Hall");
+		}
+		if(con.getCapacity() > this.capacity){
+			throw new Exception("this Hall is not big enough (Event expectedCapacity > the Hall capacity)");
+		}
+		
+		this.events.put(date, con);
+		return true;
+	}
+	
+	
 
 }

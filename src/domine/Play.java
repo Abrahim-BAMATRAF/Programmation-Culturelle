@@ -3,7 +3,7 @@ package domine;
 import java.util.Date;
 
 public class Play extends Event {
-	private final Date startDate;
+	private final Date startDate; // the date we want the event to start in, not necessarily the actual date of the event
 	private final Date endDate;
 	private final String title;
 	
