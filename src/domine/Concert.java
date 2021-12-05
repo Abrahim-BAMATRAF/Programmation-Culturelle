@@ -9,6 +9,7 @@ public class Concert extends Event {
 
 	public Concert(int cap, Date d, String name) {
 		super(cap);
+		
 		this.date = d;
 		this.presenter = name;
 	}

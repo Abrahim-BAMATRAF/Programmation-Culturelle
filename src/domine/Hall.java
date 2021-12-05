@@ -9,12 +9,14 @@ import java.util.concurrent.TimeUnit;
 public class Hall { //represent "salles" // Aggregate
 	
 	private int capacity; //could be replaced by value object
+	private String name; 	// naming the halls to easily identify them
 	
 	private HashMap<Date,TimeSlot> timeSlots;
 	private HashMap<Date,Event> events;
 	
-	public Hall(int cap){
+	public Hall(int cap, String n){
 		this.capacity = cap;
+		this.name = n;
 		this.timeSlots = new HashMap<>();
 		this.events = new HashMap<>();
 		
@@ -24,6 +26,10 @@ public class Hall { //represent "salles" // Aggregate
 		return this.capacity;
 	}
 	
+	public String getName() {
+		return name;
+	}
+
 	public void addTimeSlot(TimeSlot slot)throws Exception{
 		if(this.timeSlots.containsKey(slot.getDate())){
 			throw new Exception("this date already has a timeSlot");
@@ -146,6 +152,7 @@ public class Hall { //represent "salles" // Aggregate
 	}
 	
 	public boolean hasEmptySlots() {
+		
 		return timeSlots.size() > events.size();
 	}
 	
@@ -170,20 +177,22 @@ public class Hall { //represent "salles" // Aggregate
 		return res;
 	}
 	
-	public boolean addConcert(Concert con, Date date)throws Exception{
+	public boolean addEvent(Event ev, Date date)throws Exception{
 		if(this.events.containsKey(date)){
 			throw new Exception("this date is already alocated");
 		}
 		if(!this.timeSlots.containsKey(date)){
 			throw new Exception("this date does not exist for this Hall");
 		}
-		if(con.getCapacity() > this.capacity){
+		if(ev.getCapacity() > this.capacity){
 			throw new Exception("this Hall is not big enough (Event expectedCapacity > the Hall capacity)");
 		}
 		
-		this.events.put(date, con);
+		this.events.put(date, ev);
 		return true;
 	}
+	
+	
 	
 	
 

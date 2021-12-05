@@ -1,6 +1,7 @@
 package domine;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 public class Play extends Event {
 	private final Date startDate; // the date we want the event to start in, not necessarily the actual date of the event
@@ -24,6 +25,15 @@ public class Play extends Event {
 
 	public String getTitle() {
 		return title;
+	}
+	
+	
+	public int getNbDays() {
+		
+		long diffInMillies = Math.abs(endDate.getTime() - startDate.getTime());
+	    long currentDiff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+
+		return (int)currentDiff + 1;
 	}
 	
 

@@ -8,16 +8,15 @@ import java.util.concurrent.TimeUnit;
 import domine.Concert;
 import domine.Hall;
 
-public class ProgrammedConcert {
+public class ProgrammedConcert extends ProgrammedEvent {
 	
 	private final Concert concert;
 	private Hall hall;
 	private Date date;
-	private boolean isProgramed;
 	
 	public ProgrammedConcert(Concert con) {
+		super();
 		this.concert = con;
-		this.isProgramed = false;
 	}
 	
 	public boolean program(Collection<Hall> halls) throws Exception {
@@ -34,7 +33,7 @@ public class ProgrammedConcert {
 			prog = programInNearestDate(halls);
 		}
 		
-		this.isProgramed = prog;
+		this.isProgrammed = prog;
 		return prog;
 	}
 	
@@ -50,13 +49,15 @@ public class ProgrammedConcert {
 					Date weekend = hall.getEmptyWeekend();
 					if(weekend != null){
 						//we found a free weekend
-						if(hall.addConcert(concert, date)) {
+						if(hall.addEvent(concert, weekend)) {
+							this.date = weekend;
 							this.hall = hall;
 							return true;
 						}
 					}else {
 						Date nearestDate = hall.getNearestValidDate(concert.getDate());
-						if(hall.addConcert(concert, nearestDate)) {
+						if(hall.addEvent(concert, nearestDate)) {
+							this.date = nearestDate;
 							this.hall = hall;
 							return true;
 						}
@@ -78,7 +79,8 @@ public class ProgrammedConcert {
 				Date weekend = hall.getEmptyWeekend();
 				if(weekend != null){
 					//we found a free weekend
-					if(hall.addConcert(concert, date)) {
+					if(hall.addEvent(concert, weekend)) {
+						this.date = weekend;
 						this.hall = hall;
 						return true;
 					}
@@ -111,11 +113,25 @@ public class ProgrammedConcert {
 		}
 		
 		if(resDate != null) {
-			if(hall.addConcert(concert, resDate)) {
+			if(resHall.addEvent(concert, resDate)) {
+				this.date = resDate;
 				this.hall = resHall;
 				return true;
 			}
 		}
 		return false;
+	}
+
+
+	public Hall getHall() {
+		return hall;
+	}
+
+	public Date getDate() {
+		return date;
+	}
+
+	public Concert getConcert() {
+		return concert;
 	}
 }
